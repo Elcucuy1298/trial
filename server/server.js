@@ -8,7 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Initialize Firebase Admin SDK
-const serviceAccount = require('C:\Users\Alcazar\Desktop\QRscanner\node\tupc-fc73d-firebase-adminsdk-hebyy-a706383d6f.json');
+const serviceAccount = require('node/tupc-fc73d-firebase-adminsdk-hebyy-a706383d6f.json');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: 'https://console.firebase.google.com/project/tupc-fc73d/database/tupc-fc73d-default-rtdb/data/~2F',
