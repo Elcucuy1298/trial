@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Code Scanner</title>
+<style>
+  #video-container {
+    margin: auto;
+    width: 100%;
+    max-width: 400px;
+  }
+  #qr-result {
+    text-align: center;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+<div id="video-container">
+  <video id="qr-video" width="100%" height="auto" playsinline></video>
+</div>
+<div id="qr-result"></div>
+
+<script src="https://rawgit.com/sitepoint-editors/jsqrcode/master/src/qr_packed.js"></script>
+<script>
+  const video = document.getElementById('qr-video');
+  const qrResult = document.getElementById('qr-result');
+
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+    .then(stream => {
+      video.srcObject = stream;
+      video.setAttribute('playsinline', true);
+      video.play();
+      requestAnimationFrame(tick);
+    });
+
+  function tick() {
+    qrResult.innerText = '';
+    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+      qrResult.innerText = 'Scanning QR code...';
+      const canvas = document.createElement('canvas');
+      const canvasContext = canvas.getContext('2d');
+      const videoWidth = video.videoWidth;
+      const videoHeight = video.videoHeight;
+      canvas.width = videoWidth;
+      canvas.height = videoHeight;
+      canvasContext.drawImage(video, 0, 0, videoWidth, videoHeight);
+      const imageData = canvasContext.getImageData(0, 0, videoWidth, videoHeight);
+      const code = jsQR(imageData.data, imageData.width, imageData.height);
+      if (code) {
+        qrResult.innerText = 'QR Code detected: ' + code.data;
+      } else {
+        requestAnimationFrame(tick);
+      }
+    } else {
+      requestAnimationFrame(tick);
+    }
+  }
+</script>
+</body>
+</html>
